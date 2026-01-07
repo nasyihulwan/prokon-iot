@@ -4,13 +4,13 @@
 #include <RTClib.h>
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
-// #include <PubSubClient. h>
-// #include <ArduinoJson.h>
+#include <PubSubClient. h>
+#include <ArduinoJson.h>
 #include <Adafruit_MLX90614.h>
 
 // ===== WiFi Configuration =====
-const char* ssid = "Resticted_Zone_Plus";           
-const char* password = "ModalDong26";  
+const char* ssid = "Rifki";           
+const char* password = "hhhhhhhh";  
 
 // ===== MQTT Configuration (COMMENTED) =====
 const char* mqtt_server = "f001110f.ala.asia-southeast1.emqxsl.com";
@@ -355,91 +355,91 @@ void connectWiFi() {
 }
 
 // ===== MQTT Callback (COMMENTED) =====
-// void mqttCallback(char* topic, byte* payload, unsigned int length) {
-//   Serial.print("MQTT Message: ");
-//   for (unsigned int i = 0; i < length; i++) {
-//     Serial.print((char)payload[i]);
-//   }
-//   Serial.println();
-// }
+void mqttCallback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("MQTT Message: ");
+  for (unsigned int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+}
 
 // ===== Connect to MQTT (COMMENTED) =====
-// void connectMQTT() {
-//   if (! wifiConnected) return;
+void connectMQTT() {
+  if (! wifiConnected) return;
   
-//   espClient.setInsecure();
+  espClient.setInsecure();
   
-//   mqttClient.setServer(mqtt_server, mqtt_port);
-//   mqttClient.setCallback(mqttCallback);
+  mqttClient.setServer(mqtt_server, mqtt_port);
+  mqttClient.setCallback(mqttCallback);
   
-//   Serial.println("\n--- Connecting to MQTT ---");
+  Serial.println("\n--- Connecting to MQTT ---");
   
-//   int attempts = 0;
-//   while (!mqttClient.connected() && attempts < 3) {
-//     Serial.print("MQTT connecting... ");
+  int attempts = 0;
+  while (!mqttClient.connected() && attempts < 3) {
+    Serial.print("MQTT connecting... ");
     
-//     String clientId = "ESP32_" + String(random(0xffff), HEX);
+    String clientId = "ESP32_" + String(random(0xffff), HEX);
     
-//     if (mqttClient.connect(clientId.c_str(), mqtt_username, mqtt_password)) {
-//       mqttConnected = true;
-//       Serial.println("CONNECTED");
-//       Serial.print("Client ID: ");
-//       Serial.println(clientId);
-//     } else {
-//       Serial. print("FAILED, rc=");
-//       Serial.print(mqttClient.state());
-//       Serial.println(" retrying...");
-//       attempts++;
-//       delay(2000);
-//     }
-//   }
+    if (mqttClient.connect(clientId.c_str(), mqtt_username, mqtt_password)) {
+      mqttConnected = true;
+      Serial.println("CONNECTED");
+      Serial.print("Client ID: ");
+      Serial.println(clientId);
+    } else {
+      Serial. print("FAILED, rc=");
+      Serial.print(mqttClient.state());
+      Serial.println(" retrying...");
+      attempts++;
+      delay(2000);
+    }
+  }
   
-//   if (!mqttConnected) {
-//     Serial.println("MQTT:  FAILED after 3 attempts");
-//   }
-// }
+  if (!mqttConnected) {
+    Serial.println("MQTT:  FAILED after 3 attempts");
+  }
+}
 
 // ===== Publish to MQTT (COMMENTED) =====
-// bool publishToMQTT(float temperature) {
-//   if (!mqttConnected) {
-//     Serial.println("MQTT: Not connected, skipping publish");
-//     return false;
-//   }
+bool publishToMQTT(float temperature) {
+  if (!mqttConnected) {
+    Serial.println("MQTT: Not connected, skipping publish");
+    return false;
+  }
   
-//   StaticJsonDocument<256> doc;
-//   doc["temperature"] = temperature;
-//   doc["status"] = (temperature >= TEMP_NORMAL) ? "high" : "normal";
-//   doc["device"] = "ESP32_Attendance";
-//   doc["user"] = userName;
+  StaticJsonDocument<256> doc;
+  doc["temperature"] = temperature;
+  doc["status"] = (temperature >= TEMP_NORMAL) ? "high" : "normal";
+  doc["device"] = "ESP32_Attendance";
+  doc["user"] = userName;
   
-//   if (rtcAvailable) {
-//     DateTime now_time = rtc.now();
-//     char timestamp[32];
-//     sprintf(timestamp, "%04d-%02d-%02d %02d:%02d:%02d", 
-//             now_time.year(), now_time.month(), now_time.day(),
-//             now_time.hour(), now_time.minute(), now_time.second());
-//     doc["timestamp"] = timestamp;
-//   }
+  if (rtcAvailable) {
+    DateTime now_time = rtc.now();
+    char timestamp[32];
+    sprintf(timestamp, "%04d-%02d-%02d %02d:%02d:%02d", 
+            now_time.year(), now_time.month(), now_time.day(),
+            now_time.hour(), now_time.minute(), now_time.second());
+    doc["timestamp"] = timestamp;
+  }
   
-//   String jsonString;
-//   serializeJson(doc, jsonString);
+  String jsonString;
+  serializeJson(doc, jsonString);
   
-//   Serial.println("\n--- Publishing to MQTT ---");
-//   Serial.print("Topic: ");
-//   Serial.println(mqtt_topic);
-//   Serial.print("Payload: ");
-//   Serial.println(jsonString);
+  Serial.println("\n--- Publishing to MQTT ---");
+  Serial.print("Topic: ");
+  Serial.println(mqtt_topic);
+  Serial.print("Payload: ");
+  Serial.println(jsonString);
   
-//   bool result = mqttClient.publish(mqtt_topic, jsonString.c_str());
+  bool result = mqttClient.publish(mqtt_topic, jsonString.c_str());
   
-//   if (result) {
-//     Serial.println("MQTT: Published successfully!");
-//   } else {
-//     Serial.println("MQTT:  Publish FAILED!");
-//   }
+  if (result) {
+    Serial.println("MQTT: Published successfully!");
+  } else {
+    Serial.println("MQTT:  Publish FAILED!");
+  }
   
-//   return result;
-// }
+  return result;
+}
 
 void setup() {
   Serial.begin(115200);
@@ -530,9 +530,9 @@ void setup() {
   connectWiFi();
   
   // ===== MQTT (COMMENTED) =====
-  // if (wifiConnected) {
-  //   connectMQTT();
-  // }
+  if (wifiConnected) {
+    connectMQTT();
+  }
   
   // Status akhir
   Serial.println("\n=== INIT COMPLETE ===");
@@ -542,8 +542,8 @@ void setup() {
   Serial.println(mlxAvailable ?  "ACTIVE" : "DISABLED");
   Serial.print("WiFi: ");
   Serial.println(wifiConnected ?  "CONNECTED" : "DISCONNECTED");
-  // Serial.print("MQTT: ");
-  // Serial.println(mqttConnected ? "CONNECTED" : "DISCONNECTED");
+  Serial.print("MQTT: ");
+  Serial.println(mqttConnected ? "CONNECTED" : "DISCONNECTED");
   Serial.println("=====================\n");
   
   lcd.clear();
@@ -554,8 +554,8 @@ void setup() {
   lcd.print(mlxAvailable ? "OK " : "!!  ");
   lcd.print("WiFi:");
   lcd.print(wifiConnected ? "OK" : "--");
-  // lcd.print("MQTT:");
-  // lcd.print(mqttConnected ? "OK" : "--");
+  lcd.print("MQTT:");
+  lcd.print(mqttConnected ? "OK" : "--");
   
   delay(3000);
   lcd.clear();
@@ -575,19 +575,19 @@ void loop() {
   unsigned long now = millis();
   
   // ===== MQTT Loop (COMMENTED) =====
-  // if (mqttConnected) {
-  //   mqttClient.loop();
-  // }
+  if (mqttConnected) {
+    mqttClient.loop();
+  }
   
   // ===== Auto-reconnect MQTT (COMMENTED) =====
-  // if (wifiConnected && !mqttClient.connected()) {
-  //   static unsigned long lastReconnect = 0;
-  //   if (now - lastReconnect > 5000) {
-  //     Serial.println("MQTT disconnected, reconnecting...");
-  //     connectMQTT();
-  //     lastReconnect = now;
-  //   }
-  // }
+  if (wifiConnected && !mqttClient.connected()) {
+    static unsigned long lastReconnect = 0;
+    if (now - lastReconnect > 5000) {
+      Serial.println("MQTT disconnected, reconnecting...");
+      connectMQTT();
+      lastReconnect = now;
+    }
+  }
   
   // Baca distance
   float distance = getDistance();
