@@ -9,8 +9,8 @@
 #include <Adafruit_MLX90614.h>
 
 // ===== WiFi Configuration =====
-const char* ssid = "Rifki";           
-const char* password = "hhhhhhhh";  
+const char* ssid = "asd";           
+const char* password = "asd";  
 
 // ===== MQTT Configuration (COMMENTED) =====
 const char* mqtt_server = "f001110f.ala.asia-southeast1.emqxsl.com";
